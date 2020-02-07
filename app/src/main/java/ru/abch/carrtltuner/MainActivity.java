@@ -1,7 +1,5 @@
 package ru.abch.carrtltuner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -13,19 +11,21 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.kevalpatel2106.rulerpicker.RulerValuePicker;
 import com.kevalpatel2106.rulerpicker.RulerValuePickerListener;
 
 import static java.lang.String.format;
 
 public class MainActivity extends AppCompatActivity {
-    static int freq = 1000;
+    static int freq;
     final static int minFreq = 880, maxFreq = 1080;
     RulerValuePicker rulerValuePicker;
     String TAG = "MainActivity";
     TextView tv;
     static Resources mResources;
-    static boolean run = false, mute = false;
+    static boolean run = false, mute;
     Button btnFreqDown, btnFreqUp, btnF1, btnF2, btnF3, btnF4, btnF5, btnF6, btnF7, btnF8;
     ImageButton btnOn, btnMute;
     View.OnClickListener freqClick;
@@ -43,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
         mResources = getResources();
         tv = findViewById(R.id.freq);
         rulerValuePicker  = findViewById(R.id.ruler_picker);
+        sp = getSharedPreferences();
+        freq = sp.getInt("F",1000);
+        mute = sp.getBoolean("mute", false);
         rulerValuePicker.selectValue(freq);
         rulerValuePicker.setValuePickerListener(new RulerValuePickerListener() {
             @Override
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     rulerValuePicker.selectValue(freq);
                 }
                 tv.setText(showFreq(freq) + " " + mResources.getString(R.string.freq_unit));
+                sp.edit().putInt("F",freq).apply();
             }
 
             @Override
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (freq > minFreq) {
                     rulerValuePicker.selectValue(--freq);
+                    sp.edit().putInt("F",freq).apply();
                 }
             }
         });
@@ -86,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (freq < maxFreq) {
                     rulerValuePicker.selectValue(++freq);
+                    sp.edit().putInt("F",freq).apply();
                 }
             }
         });
@@ -102,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         btnMute = findViewById(R.id.mute);
+        if (mute) {
+            btnMute.setImageDrawable(mResources.getDrawable(R.mipmap.no_audio_104px));
+        } else {
+            btnMute.setImageDrawable(mResources.getDrawable(R.mipmap.speaker_104px));
+        }
         btnMute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     btnMute.setImageDrawable(mResources.getDrawable(R.mipmap.speaker_104px));
                 }
+                sp.edit().putBoolean("mute", mute).apply();
             }
         });
         btnF1 = findViewById(R.id.f1);
@@ -187,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         btnF6.setOnLongClickListener(freqLongClick);
         btnF7.setOnLongClickListener(freqLongClick);
         btnF8.setOnLongClickListener(freqLongClick);
-        sp = getSharedPreferences();
+
         int freqBtn;
         freqBtn = sp.getInt("F1",890);
         btnF1.setTag(freqBtn);

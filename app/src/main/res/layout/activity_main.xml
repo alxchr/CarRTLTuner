@@ -53,7 +53,7 @@
             app:float_scale="0.1"
             app:min_value="875"
             app:notch_color="@color/lightgrey"
-            app:ruler_text_size="16sp"/>
+            app:ruler_text_size="32dp"/>
         <Button
             android:background="@color/lightgrey"
             android:layout_width="0dp"
