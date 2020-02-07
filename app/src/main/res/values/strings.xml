@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CarRTLTuner</string>
+    <string name="freq_unit">MHz</string>
+</resources>
